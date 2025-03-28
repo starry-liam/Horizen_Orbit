@@ -25,16 +25,16 @@ void altimeterSetup() {
 class BARO {
     private:
         float altitude;
-        float altitudeReadings[avgReadings];
+        float altitudeReadings[AltAvgReadings];
         float altitudeSum;
     
     public:
         float getAltitude() {
-            for (int i; i < avgReadings; i++) {
+            for (int i; i < AltAvgReadings; i++) {
                 altitudeReadings[i] = bmp.readAltitude(seaLevelPressure);
                 altitudeSum += altitudeReadings[i];
             }
-            altitude = altitudeSum / avgReadings;
+            altitude = altitudeSum / AltAvgReadings;
             return altitude;
         }
 

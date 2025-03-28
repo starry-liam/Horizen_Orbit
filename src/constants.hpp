@@ -13,7 +13,8 @@ const int voltChecker = 0;
 const int sdCs = 0;
 const int epromWp = 0;
 
-const int avgReadings = 10;
+const int AltAvgReadings = 9;
+const int VoltAvgReadings = 5;
 
 const double Mp = 0;
 const double Mi = 0;
