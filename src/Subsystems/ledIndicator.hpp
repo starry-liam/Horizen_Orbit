@@ -5,8 +5,8 @@
 #include "constants.hpp"
 
 void ledIndicatorSetup() {
-    pinMode(led, OUTPUT);
-    digitalWrite(led, LOW);
+    pinMode(Constants::Pins::led, OUTPUT);
+    digitalWrite(Constants::Pins::led, LOW);
 }
 
 class LED {
@@ -32,7 +32,7 @@ class LED {
             }
         }
         void pulse () {
-
+            
         }
         
 };

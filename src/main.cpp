@@ -11,31 +11,40 @@
 #include "Subsystems/Sensor/altimeter.hpp"
 #include "Subsystems/Sensor/gyroAccel.hpp"
 //function includes
-#include "Functions/setReactionpos.hpp"
 #include "Functions/writeData.hpp"
 
 
 
 
+//initialize class entities
+GYRO GYROAC;
+Reaction REACTION;
+
 void setup() { //main setup function
    
    //set baud rates
-   Serial.begin(serial_baud);
-   Serial1.begin(serial1_baud);
+   Serial.begin(Constants::Serial::serial_baud); //main serial port for debugging
+   Serial1.begin(Constants::Serial::serial1_baud); //serial port for data logging or other purposes
     
     //initialize subsystems
     altimeterSetup();
     gyroAccelSetup();
-    reactionWheelSetup();
-    
-
+    GYROAC.getOffsets();
     //initialize class entities
-    BARO alt;
-    GYRO gyro;
-    Reaction react;
-    Volt voltmeter;
 }
-
 void loop() { //main loop
+    GYROAC.getGyro();
+    float inp = GYROAC.getAngleZ();
+
+    Serial.print(GYROAC.getAngleX());
+    Serial.print(", "); 
+    Serial.print(GYROAC.getAngleY());
+    Serial.print(", ");
+    Serial.print(GYROAC.getAngleZ());
+    Serial.print(", ");
+    Serial.print(REACTION.gotoPos(90, inp));
+    Serial.print(", ");
+    Serial.println(90);
+    
 
 }

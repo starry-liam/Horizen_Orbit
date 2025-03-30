@@ -19,8 +19,6 @@ void gyroAccelSetup() {
     mpu.setGyroRange(MPU6050_RANGE_500_DEG);
     mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
     delay(100);
-
-        
 }
 
 class GYRO {
@@ -31,8 +29,23 @@ class GYRO {
         float gyroX;
         float gyroY;
         float gyroZ;
-    
+        float gyroXOffset = 0.0;
+        float gyroYOffset = 0.0;
+        float gyroZOffset = 0.0;
+
+        float angleX = 0.0;
+        float angleY = 0.0;
+        float angleZ = 0.0;
+
+        unsigned long lastUpdateTime = 0;
+
     public:
+        
+        void getOffsets() {
+            gyroXOffset = getGyroX();
+            gyroYOffset = getGyroY();
+            gyroZOffset = getGyroZ();
+        }
         void getAccel() {
             sensors_event_t accel;
             mpu.getAccelerometerSensor()->getEvent(&accel);
@@ -44,9 +57,49 @@ class GYRO {
         void getGyro() {
             sensors_event_t gyro;
             mpu.getGyroSensor()->getEvent(&gyro);
-            gyroX = gyro.gyro.x;
-            gyroY = gyro.gyro.y;
-            gyroZ = gyro.gyro.z;
+            updateAngles();
+            gyroX = gyro.gyro.x - gyroXOffset;
+            gyroY = gyro.gyro.y - gyroYOffset;
+            gyroZ = gyro.gyro.z - gyroZOffset;
+        }
+
+        void updateAngles() {
+            unsigned long currentTime = millis();
+            float deltaTime = (currentTime - lastUpdateTime) / 1000.0; // Convert to seconds
+
+            if (lastUpdateTime != 0) {
+                angleX += gyroX * deltaTime * (180.0 / PI); // Convert to degrees
+                angleY += gyroY * deltaTime * (180.0 / PI); // Convert to degrees
+                angleZ += gyroZ * deltaTime * (180.0 / PI); // Convert to degrees
+
+                // Constrain angles to -180 to 180 degrees
+                angleX = constrainAngle(angleX);
+                angleY = constrainAngle(angleY);
+                angleZ = constrainAngle(angleZ);
+            }
+
+            lastUpdateTime = currentTime;
+        }
+
+    private:
+        float constrainAngle(float angle) {
+            // Constrain angle to -180 to 180 degrees
+            while (angle > 180.0) angle -= 360.0;
+            while (angle < -180.0) angle += 360.0;
+            return angle;
+        }
+
+    public:
+        float getAngleX() {
+            return angleX;
+        }
+
+        float getAngleY() {
+            return angleY;
+        }
+
+        float getAngleZ() {
+            return angleZ;
         }
 
         float getAccelX() {

@@ -1,27 +1,40 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
-const int serial_baud = 115200;
-const int serial1_baud = 115200;
+namespace Constants {
+        struct Serial {
+            public:
+                static constexpr int serial_baud = 115200;
+                static constexpr int serial1_baud = 115200;
+        };
+        struct Pins {
+            public:
+                constexpr static int reactionWheelFwd = 16;
+                constexpr static int reactionWheelRev = 17;
 
-const int reactionWheelFwd = 16;
-const int reactionWheelRev = 17;
+                constexpr static int led = 15;
+                constexpr static int voltChecker = 0;
 
-const int led = 15;
-const int voltChecker = 0;
+                constexpr static int sdCs = 0;
+                constexpr static int epromWp = 0;
+        };
 
-const int sdCs = 0;
-const int epromWp = 0;
+        struct avgReadings {
+            public:
+                constexpr static int AltAvgReadings = 9;
+                constexpr static int VoltAvgReadings = 5;
+        };
 
-const int AltAvgReadings = 9;
-const int VoltAvgReadings = 5;
+        struct reactionPID {
+            public:
+                constexpr static double kp = 0.25;
+                constexpr static double ki = 0.0;
+                constexpr static double kd = 0.0;
+        };
 
-const double Mp = 0;
-const double Mi = 0;
-const double Md = 0;
-
-const double seaLevelPressure = 1013.25;
-
-
-
+        struct altimeter {
+            public:
+                constexpr static double seaLevelPressure = 1013.25;
+        };
+};
 #endif // CONSTANTS_HPP

@@ -8,17 +8,17 @@ class Volt {
     private:
         float voltage;
         float voltageSum;
-        float voltageReadings[VoltAvgReadings];
+        float voltageReadings[Constants::avgReadings::VoltAvgReadings];
 
     public:
         float getVoltage() {
-         voltage = analogRead(voltChecker);
+         voltage = analogRead(Constants::Pins::voltChecker); // Read the analog voltage value
             voltage = voltage * (3.3 / 1023.0);
-            for (int i; i < VoltAvgReadings; i++) {
+            for (int i; i < Constants::avgReadings::VoltAvgReadings; i++) {
                 voltageReadings[i] = voltage;
                 voltageSum += voltageReadings[i];
             }
-            voltage = voltageSum / VoltAvgReadings;
+            voltage = voltageSum / Constants::avgReadings::VoltAvgReadings; // Calculate the average voltage
             return voltage;
         }
 };
