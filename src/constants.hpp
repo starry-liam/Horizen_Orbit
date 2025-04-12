@@ -9,8 +9,8 @@ namespace Constants {
         };
         struct Pins {
             public:
-                constexpr static int reactionWheelFwd = 16;
-                constexpr static int reactionWheelRev = 17;
+                constexpr static int reactionWheelFwd = 7;
+                constexpr static int reactionWheelRev = 6;
 
                 constexpr static int led = 15;
                 constexpr static int voltChecker = 0;
@@ -27,7 +27,7 @@ namespace Constants {
 
         struct reactionPID {
             public:
-                constexpr static double kp = 0.25;
+                constexpr static double kp = 1.0;
                 constexpr static double ki = 0.0;
                 constexpr static double kd = 0.0;
         };
