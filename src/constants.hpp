@@ -9,14 +9,17 @@ namespace Constants {
         };
         struct Pins {
             public:
-                constexpr static int reactionWheelFwd = 7;
-                constexpr static int reactionWheelRev = 6;
+                constexpr static int reactionWheelFwd = 6;
+                constexpr static int reactionWheelRev = 5;
 
                 constexpr static int led = 15;
-                constexpr static int voltChecker = 0;
+                constexpr static int voltChecker = 20;
 
                 constexpr static int sdCs = 0;
-                constexpr static int epromWp = 0;
+                constexpr static int epromWp = 9;
+
+                constexpr static int ctrlPin = 17;
+                constexpr static int userPin = 16;
         };
 
         struct avgReadings {
@@ -36,5 +39,11 @@ namespace Constants {
             public:
                 constexpr static double seaLevelPressure = 1013.25;
         };
+        struct thresh
+        {
+            public:
+                constexpr static int buttonThreshold = 700; // Threshold for button press detection
+        };
+        
 };
 #endif // CONSTANTS_HPP

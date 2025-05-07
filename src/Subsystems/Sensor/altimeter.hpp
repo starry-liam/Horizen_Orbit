@@ -37,7 +37,7 @@ class BARO {
             altitude = altitudeSum / Constants::avgReadings::AltAvgReadings; // Calculate the average altitude
             return altitude;
 
-        }
+        } 
 
         float getTemp() {
             return bmp.readTemperature();
