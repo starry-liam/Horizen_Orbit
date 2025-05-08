@@ -11,7 +11,62 @@ void ledIndicatorSetup() {
 class LED {
     private:
         int digits;    
+        int Timedelay;
+        int blinkTimes;
+        int currentTimes;
+        int time;
+        int timePassed;
+        int timeStart;
+        bool done = true;
+
+        
+
     public:
+        void ledRun(int times, int delayTime) {
+            if (times == 0) {
+                if (done) {
+                    off();
+                    Serial.println("no input");
+                }
+                return; // Exit the function if no blinking is required
+            }
+
+            if (done) {
+                // Initialize blinking process
+                done = false;
+                Timedelay = delayTime;
+                blinkTimes = times;
+                currentTimes = 0;
+                timeStart = millis();
+                Serial.println("input received");
+                Serial.print("Blinking LED for ");
+                Serial.print(blinkTimes);
+                Serial.println(" times");
+            }
+
+            unsigned long currentTime = millis(); // Use unsigned long for time calculations
+
+            if (!done && currentTimes < blinkTimes) {
+                if (currentTime - timeStart < Timedelay / 2) {
+                    on(); // Turn LED on for the first half of the delay
+                    Serial.println("LED ON");
+                } else if (currentTime - timeStart < Timedelay) {
+                    off(); // Turn LED off for the second half of the delay
+                    Serial.println("LED OFF");
+                } else {
+                    currentTimes++; // Increment blink count after one full cycle
+                    timeStart = millis(); // Reset the start time for the next blink
+                }
+            }
+
+            if (currentTimes >= blinkTimes) {
+                // Blinking process complete
+                done = true;
+                off();
+                Serial.println("Blinking complete");
+            }
+        }
+    
         void splitInt(int num) {
             for (int d = num; d > 0; digits++) {
                 d /= 10;
@@ -27,12 +82,9 @@ class LED {
                 
                 intRevArray[i] = intArray[dg];
                 dg--;
-
             }
         }
-        void pulse () {
-            
-        }
+
         void on() {
             digitalWrite(Constants::Pins::led, HIGH);
         }
@@ -40,12 +92,7 @@ class LED {
             digitalWrite(Constants::Pins::led, LOW);
         }
         void blink(int times, int delayTime) {
-            for (int i = 0; i < times; i++) {
-                digitalWrite(Constants::Pins::led, HIGH);
-                delay(delayTime);
-                digitalWrite(Constants::Pins::led, LOW);
-                delay(delayTime);
-            }
+            
         }
         
 };

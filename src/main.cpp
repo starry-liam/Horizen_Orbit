@@ -20,6 +20,7 @@
 //initialize class entities
 GYRO GYROAC;
 BARO alt;
+LED led;
 Reaction REACTION;
 EEPROM eeprom;
 
@@ -37,8 +38,6 @@ void setup() { //main setup function
 }
 void loop() { //main loop
     
-    systemTest();
-    delay(500);
-    
-
+    led.ledRun(5, 500);
+    delay(10);
 }
