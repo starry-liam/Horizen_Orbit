@@ -30,7 +30,7 @@ class BARO {
     
     public:
         float getAltitude() {
-            for (int i; i < Constants::avgReadings::AltAvgReadings; i++) {
+            for(int i = 0; i < Constants::avgReadings::AltAvgReadings; i++) {
                 altitudeReadings[i] = bmp.readAltitude(Constants::altimeter::seaLevelPressure); // Read altitude in meters
                 altitudeSum += altitudeReadings[i];
             }

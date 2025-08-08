@@ -23,12 +23,12 @@ void gyroAccelSetup() {
 
 class GYRO {
     private:
-        float accelX;
-        float accelY;
-        float accelZ;
-        float gyroX;
-        float gyroY;
-        float gyroZ;
+        float accelX = 0.0;
+        float accelY = 0.0;
+        float accelZ = 0.0;
+        float gyroX = 0.0;
+        float gyroY = 0.0;
+        float gyroZ = 0.0;
         float gyroXOffset = 0.0;
         float gyroYOffset = 0.0;
         float gyroZOffset = 0.0;
@@ -38,7 +38,16 @@ class GYRO {
         float angleZ = 0.0;
 
         unsigned long lastUpdateTime = 0;
+        float constrainAngle(float angle) {
+            // Constrain angle to -180 to 180 degrees
+            while (angle > 180.0) angle -= 360.0;
+            while (angle < -180.0) angle += 360.0;
+            return angle;
+        }
 
+        float lowPassFilter(float currentValue, float previousValue, float alpha) {
+            return alpha * currentValue + (1 - alpha) * previousValue;
+        }
     public:
         void getOffsets() {
             float sumX = 0, sumY = 0, sumZ = 0;
@@ -80,24 +89,25 @@ class GYRO {
 
         void updateAngles() {
             unsigned long currentTime = millis();
-            float deltaTime = (currentTime - lastUpdateTime) / 1000.0; // Convert to seconds
+            float deltaTime = (currentTime - lastUpdateTime) * 0.001f; // ms → seconds
 
             if (lastUpdateTime != 0) {
-                // Gyroscope integration
-                angleX += gyroX * deltaTime * (180.0 / PI); // Convert to degrees
-                angleY += gyroY * deltaTime * (180.0 / PI); // Convert to degrees
-                angleZ += gyroZ * deltaTime * (180.0 / PI); // Convert to degrees
+                // Convert gyro readings to degrees/sec
+                const float radToDeg = 180.0f / PI;
+                angleX += gyroX * deltaTime * radToDeg;
+                angleY += gyroY * deltaTime * radToDeg;
+                angleZ += gyroZ * deltaTime * radToDeg;
 
-                // Accelerometer correction
-                float accelAngleX = atan2(accelY, accelZ) * (180.0 / PI);
-                float accelAngleY = atan2(-accelX, sqrt(accelY * accelY + accelZ * accelZ)) * (180.0 / PI);
+                // Calculate accelerometer-based angles
+                float accelAngleX = atan2(accelY, accelZ) * radToDeg;
+                float accelAngleY = atan2(-accelX, sqrt(accelY * accelY + accelZ * accelZ)) * radToDeg;
 
-                // Complementary filter
-                const float alpha = 0.98; // Weight for gyroscope data
-                angleX = alpha * angleX + (1 - alpha) * accelAngleX;
-                angleY = alpha * angleY + (1 - alpha) * accelAngleY;
+                // Apply complementary filter (gyro = high-pass, accel = low-pass)
+                const float alpha = 0.98f;
+                angleX = alpha * angleX + (1.0f - alpha) * accelAngleX;
+                angleY = alpha * angleY + (1.0f - alpha) * accelAngleY;
 
-                // Constrain angles to -180 to 180 degrees
+                // Keep angles within -180° to +180°
                 angleX = constrainAngle(angleX);
                 angleY = constrainAngle(angleY);
                 angleZ = constrainAngle(angleZ);
@@ -105,20 +115,6 @@ class GYRO {
 
             lastUpdateTime = currentTime;
         }
-
-    private:
-        float constrainAngle(float angle) {
-            // Constrain angle to -180 to 180 degrees
-            while (angle > 180.0) angle -= 360.0;
-            while (angle < -180.0) angle += 360.0;
-            return angle;
-        }
-
-        float lowPassFilter(float currentValue, float previousValue, float alpha) {
-            return alpha * currentValue + (1 - alpha) * previousValue;
-        }
-
-    public:
         float getAngleX() {
             return angleX;
         }

@@ -80,5 +80,50 @@ void systemTest() {
     }
     
 }
+void comma(){
+    Serial.print(",");
+}
+void printPacket(){
+    BARO alt;
+    LED led;
+    Button button;
+    GYRO GYROAC;
+    EEPROM eeprom;
+    Volt voltage;
+    pinMode(Constants::Pins::led, OUTPUT); // Set LED pin as output
+
+    GYROAC.getAccel();
+    GYROAC.getGyro();
+    GYROAC.updateAngles();
+
+    //Serial.print(time);
+    //comma();
+    Serial.print(alt.getTemp());
+    comma();
+    Serial.print(alt.getPressure());
+    comma();
+    Serial.print(alt.getAltitude());
+    comma();
+    Serial.print(GYROAC.getGyroX());
+    comma();
+    Serial.print(GYROAC.getGyroY());
+    comma();
+    Serial.print(GYROAC.getGyroZ());
+    comma();
+    Serial.print(GYROAC.getAccelX());
+    comma();
+    Serial.print(GYROAC.getAccelY());
+    comma();
+    Serial.print(GYROAC.getAccelZ());
+    comma();
+    Serial.print(GYROAC.getAngleX());
+    comma();
+    Serial.print(GYROAC.getAngleY());
+    comma();
+    Serial.print(GYROAC.getAngleZ());
+    comma();
+    Serial.println(voltage.getVoltage());
+
+}
 
 #endif // SERIALPRINT_HPP

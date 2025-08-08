@@ -7,7 +7,7 @@
 #include "Subsystems/butLed.hpp"
 #include "Subsystems/dataLog/eeprom.hpp"
 #include "Subsystems/dataLog/sd.hpp"
-#include "Subsystems/dataLog/systemTest.hpp"
+#include "Subsystems/dataLog/print.hpp"
 #include "Subsystems/Camera.hpp"
 #include "Subsystems/Sensor/altimeter.hpp"
 #include "Subsystems/Sensor/gyroAccel.hpp"
@@ -37,7 +37,6 @@ void setup() { //main setup function
     //initialize class entities
 }
 void loop() { //main loop
-    
-    led.ledRun(5, 500);
-    delay(10);
+    printPacket();
+
 }
