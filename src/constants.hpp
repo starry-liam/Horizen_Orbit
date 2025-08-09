@@ -42,7 +42,7 @@ namespace Constants {
         struct thresh
         {
             public:
-                constexpr static int buttonThreshold = 700; // Threshold for button press detection
+                constexpr static int buttonThreshold = 900; // Threshold for button press detection
         };
         
 };

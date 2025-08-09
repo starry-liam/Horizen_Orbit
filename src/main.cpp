@@ -6,9 +6,7 @@
 #include "Subsystems/reactionWheel.hpp"
 #include "Subsystems/butLed.hpp"
 #include "Subsystems/dataLog/eeprom.hpp"
-#include "Subsystems/dataLog/sd.hpp"
 #include "Subsystems/dataLog/print.hpp"
-#include "Subsystems/Camera.hpp"
 #include "Subsystems/Sensor/altimeter.hpp"
 #include "Subsystems/Sensor/gyroAccel.hpp"
 //function includes
@@ -22,7 +20,6 @@ GYRO GYROAC;
 BARO alt;
 LED led;
 Reaction REACTION;
-EEPROM eeprom;
 
 void setup() { //main setup function
    
@@ -32,11 +29,11 @@ void setup() { //main setup function
     
     //initialize subsystems
     altimeterSetup();
-    gyroAccelSetup();
+    alt.altZero(); //set the altitude zero point
+    GYROAC.gyroAccelSetup();
     GYROAC.getOffsets();
     //initialize class entities
 }
 void loop() { //main loop
     printPacket();
-
 }

@@ -119,27 +119,23 @@ class Button {
             int ctrlButtonValue = analogRead(Constants::Pins::ctrlPin);
             if (ctrlButtonValue > Constants::thresh::buttonThreshold) {
                 ctrlButtonState = true;
+                buttonPressed = 2;
             } else {
                 ctrlButtonState = false;
+                buttonPressed = 0;
             }
             return ctrlButtonState;
         }
-        int getButtonspressed() {
-            // Check the state of the buttons and update buttonPressed accordingly
-            // If user button is pressed, return 1
-            // If ctrl button is pressed, return 2
-            // If both buttons are pressed, return 3
-            // If neither button is pressed, return 0
-            if (getUserButtonState()) {
-                buttonPressed = 1;
-            }
-            if (getCtrlButtonState()) {
-                buttonPressed = 2;
-            }
+        int getButtonspressed() 
+        {
             if (getUserButtonState() && getCtrlButtonState()) {
-                buttonPressed = 3;
+                buttonPressed = 3; // Both buttons pressed
+            } else if (getUserButtonState()) {
+                buttonPressed = 1; // User button pressed
+            } else if (getCtrlButtonState()) {
+                buttonPressed = 2; // Control button pressed
             } else {
-                buttonPressed = 0;
+                buttonPressed = 0; // No buttons pressed
             }
             return buttonPressed;
         }

@@ -9,18 +9,6 @@
 #include "constants.hpp"
 
 Adafruit_MPU6050 mpu;
-
-void gyroAccelSetup() {
-    if (!mpu.begin()) {
-        Serial.println("Failed to find MPU6050 chip");
-        while (1);
-    }
-    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
-    mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-    mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
-    delay(100);
-}
-
 class GYRO {
     private:
         float accelX = 0.0;
@@ -37,6 +25,17 @@ class GYRO {
         float angleY = 0.0;
         float angleZ = 0.0;
 
+        float accelXZero = 0.0;
+        float accelYZero = 0.0;
+        float accelZZero = 0.0;
+        float gyroXZero = 0.0;
+        float gyroYZero = 0.0;
+        float gyroZZero = 0.0;
+
+        float angleXZero = 0.0;
+        float angleYZero = 0.0;
+        float angleZZero = 0.0;
+
         unsigned long lastUpdateTime = 0;
         float constrainAngle(float angle) {
             // Constrain angle to -180 to 180 degrees
@@ -49,6 +48,20 @@ class GYRO {
             return alpha * currentValue + (1 - alpha) * previousValue;
         }
     public:
+
+        void gyroAccelSetup() {
+            if (!mpu.begin()) {
+                Serial.println("Failed to find MPU6050 chip");
+                while (1);
+            }
+            mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+            mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+            mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+            delay(100);
+
+            zeroGyroAc();
+        }
+
         void getOffsets() {
             float sumX = 0, sumY = 0, sumZ = 0;
             const int numSamples = 100;
@@ -65,6 +78,8 @@ class GYRO {
             gyroXOffset = sumX / numSamples;
             gyroYOffset = sumY / numSamples;
             gyroZOffset = sumZ / numSamples;
+
+
         }
 
         void getAccel() {
@@ -115,40 +130,63 @@ class GYRO {
 
             lastUpdateTime = currentTime;
         }
+        void zeroGyroAc() {
+            delay(1000); // Allow time for MPU to stabilize
+            getOffsets();
+            gyroXZero = gyroX;
+            gyroYZero = gyroY;
+            gyroZZero = gyroZ;
+            
+            accelXZero = accelX;
+            accelYZero = accelY;
+            accelZZero = accelZ;
+
+            angleXZero = angleX;
+            angleYZero = angleY;
+            angleZZero = angleZ;
+
+
+        }
         float getAngleX() {
-            return angleX;
+            return angleX - angleXZero;
         }
 
         float getAngleY() {
-            return angleY;
+            return angleY - angleYZero;
         }
 
         float getAngleZ() {
-            return angleZ;
+            return angleZ - angleZZero;
         }
 
         float getAccelX() {
-            return accelX;
+            return accelX - accelXZero;
         }
 
         float getAccelY() {
-            return accelY;
+            return accelY - accelYZero;
         }
 
         float getAccelZ() {
-            return accelZ;
+            return accelZ  - accelZZero;
         }
 
         float getGyroX() {
-            return gyroX;
+            return gyroX - gyroXZero;
         }
 
         float getGyroY() {
-            return gyroY;
+            return gyroY - gyroYZero;
         }
 
         float getGyroZ() {
-            return gyroZ;
+            return gyroZ - gyroZZero;
+        }
+        void update() {
+            getAccel();
+            getGyro();
         }
 };
+
+
 #endif // GYROACCEL_HPP

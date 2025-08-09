@@ -5,8 +5,9 @@
 #include "Subsystems/Sensor/gyroAccel.hpp"
 #include "Subsystems/Sensor/altimeter.hpp"
 
+#include "Subsystems/butLed.hpp"
+
 #include "Subsystems/dataLog/eeprom.hpp"
-#include "Subsystems/dataLog/sd.hpp"
 #include "Subsystems/voltage.hpp"
 
 void systemTest() {
@@ -20,8 +21,7 @@ void systemTest() {
 
     
     // Test Gyro and Accelerometer
-    GYROAC.getAccel();
-    GYROAC.getGyro();
+    GYROAC.update();
     GYROAC.updateAngles();
     Serial.print("Gyro X: ");
     Serial.print(GYROAC.getGyroX());
@@ -63,22 +63,6 @@ void systemTest() {
     eeprom.test(alt.getTemp());
     //sdTest();
 
-    //button/led test
-    button.getButtonspressed();
-    if (button.getButtonspressed() == 1) {
-        Serial.println("User button pressed!");
-        led.blink(1, 100); // Blink LED
-    } else if (button.getButtonspressed() == 2) {
-        Serial.println("Control button pressed!");
-        led.blink(2, 100); // Blink LED 5 times
-    } else if (button.getButtonspressed() == 3) {
-        Serial.println("Both buttons pressed!");
-        led.blink(3, 100); // Blink LED 7 times
-    } else {
-        Serial.println("No button pressed.");
-        led.off(); // Turn off LED
-    }
-    
 }
 void comma(){
     Serial.print(",");
@@ -92,8 +76,7 @@ void printPacket(){
     Volt voltage;
     pinMode(Constants::Pins::led, OUTPUT); // Set LED pin as output
 
-    GYROAC.getAccel();
-    GYROAC.getGyro();
+    GYROAC.update();
     GYROAC.updateAngles();
 
     //Serial.print(time);
@@ -122,7 +105,9 @@ void printPacket(){
     comma();
     Serial.print(GYROAC.getAngleZ());
     comma();
-    Serial.println(voltage.getVoltage());
+    Serial.print(voltage.getVoltage());
+    comma();
+    Serial.println(button.getButtonspressed());
 
 }
 
